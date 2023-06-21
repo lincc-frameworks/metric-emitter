@@ -35,6 +35,10 @@ schema = {
             "name": "value",
             "type": "float",
         },
+        {
+            "name": "commit_hash",
+            "type": "string",
+        },
     ],
 }
 
@@ -45,6 +49,7 @@ record = {
     "benchmark_type": "placeholder",  # One of ['runtime', 'memory', etc.]
     "benchmark_unit": "placeholder",  # One of ['s', 'Mb', 'Gb', 'count', etc.]
     "value": 1,  # placeholder
+    "commit_hash": None,  # placeholder
 }
 
 class Emitter():
@@ -135,9 +140,12 @@ class Emitter():
             "Accept": "application/vnd.kafka.v2+json",
         }
 
-        url = os.environ.get("KAFKA_API_URL", None)
+        base_url = os.environ.get("KAFKA_API_URL", None)
 
-        if url is None:
+        if base_url is None:
             raise ValueError("Unable to find environment variable `KAFKA_API_URL`.")
 
-        requests.post(url, json=payload, headers=headers)
+        # results in url like: `https://example.com/lsst.example.metric.name`
+        full_url = base_url + '/' + '.'.join([self.schema['namespace'], self.schema['name']])
+
+        requests.post(full_url, json=payload, headers=headers)
