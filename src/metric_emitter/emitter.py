@@ -142,10 +142,13 @@ class Emitter():
 
         base_url = os.environ.get("KAFKA_API_URL", None)
 
-        if base_url is None:
-            raise ValueError("Unable to find environment variable `KAFKA_API_URL`.")
+        if base_url is None or self.record['benchmark_env'] == 'unknown':
+            print(f"Base URL: {base_url}")
+            print(f"Benchmark environment: {self.record['benchmark_env']}")
+            print(payload)
 
-        # results in url like: `https://example.com/lsst.example.metric.name`
-        full_url = base_url + '/' + '.'.join([self.schema['namespace'], self.schema['name']])
+        else:
+            # results in url like: `https://example.com/lsst.example.metric.name`
+            full_url = base_url + '/' + '.'.join([self.schema['namespace'], self.schema['name']])
 
-        requests.post(full_url, json=payload, headers=headers)
+            requests.post(full_url, json=payload, headers=headers)
