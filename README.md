@@ -1,4 +1,6 @@
 # lf-metric-emitter
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/lincc-frameworks/metric-emitter)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/lincc-frameworks/metric-emitter/testing-and-coverage.yml)
 
 This tool encapsulates the code needed to emit metrics to the Sasquatch InfluxDB
 stack. https://sasquatch.lsst.io/index.html
