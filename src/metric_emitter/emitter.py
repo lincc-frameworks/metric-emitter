@@ -49,7 +49,7 @@ record = {
     "benchmark_type": "placeholder",  # One of ['runtime', 'memory', etc.]
     "benchmark_unit": "placeholder",  # One of ['s', 'Mb', 'Gb', 'count', etc.]
     "value": 1,  # placeholder
-    "commit_hash": None,  # placeholder
+    "commit_hash": '',  # placeholder
 }
 
 
