@@ -5,6 +5,7 @@ import time
 
 from collections.abc import Iterable
 from numbers import Number
+from urllib.parse import urljoin
 
 schema = {
     "namespace": "placholder",
@@ -141,11 +142,16 @@ class Emitter:
 
         if base_url is None or self.record["benchmark_env"] == "unknown":
             print(f"Base URL: {base_url}")
-            print(f"Benchmark environment: {self.record['benchmark_env']}")
             print(payload)
 
         else:
             # results in url like: `https://example.com/lsst.example.metric.name`
-            full_url = base_url + "/" + ".".join([self.schema["namespace"], self.schema["name"]])
+            metric_name = ".".join([self.schema["namespace"], self.schema["name"]])
+            full_url = urljoin(base_url, metric_name)
 
-            requests.post(full_url, json=payload, headers=headers)
+            response = requests.post(full_url, json=payload, headers=headers)
+
+            if response.status_code is not 200:
+                print(f"Response status code: {response.status_code}")
+                print(f"Full URL: {full_url}")
+                print(payload)
