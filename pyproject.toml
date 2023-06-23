@@ -14,10 +14,7 @@ classifiers = [
     "Programming Language :: Python",
 ]
 dynamic = ["version"]
-dependencies = [
-    "deprecated",
-    "ipykernel", # Support for Jupyter notebooks
-]
+dependencies = []
 
 # On a mac, install optional dependencies with `pip install '.[dev]'` (include the single quotes)
 [project.optional-dependencies]

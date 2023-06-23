@@ -52,13 +52,16 @@ record = {
     "commit_hash": None,  # placeholder
 }
 
-class Emitter():
-    def __init__(self, namespace: str='lsst.lf',
-                 name: str=None,
-                 module: str=None,
-                 benchmark_type: str=None,
-                 benchmark_unit: str=None,
-                 ):
+
+class Emitter:
+    def __init__(
+        self,
+        namespace: str = "lsst.lf",
+        name: str = None,
+        module: str = None,
+        benchmark_type: str = None,
+        benchmark_unit: str = None,
+    ):
         """A simple class to emit benchmarking metrics. Almost certainly this is
         too specific, and should be abstracted with a few different child class
         implementations.
@@ -91,17 +94,16 @@ class Emitter():
         self.record_value = None
 
         self.schema = schema
-        self.schema['namespace'] = self.namespace
-        self.schema['name'] = self.name
+        self.schema["namespace"] = self.namespace
+        self.schema["name"] = self.name
 
         self.record = record
-        self.record['benchmark_env'] = os.environ.get("BENCHMARK_ENV", "unknown")
-        self.record['module'] = self.module
-        self.record['benchmark_type'] = self.benchmark_type
-        self.record['benchmark_unit'] = self.benchmark_unit
+        self.record["benchmark_env"] = os.environ.get("BENCHMARK_ENV", "unknown")
+        self.record["module"] = self.module
+        self.record["benchmark_type"] = self.benchmark_type
+        self.record["benchmark_unit"] = self.benchmark_unit
 
-
-    def set_value(self, record_value: float=None) -> None:
+    def set_value(self, record_value: float = None) -> None:
         """Sets a specific value to be emitted
 
         Parameters
@@ -118,9 +120,8 @@ class Emitter():
         if not isinstance(record_value, Number):
             raise ValueError("The `record_value` must be numeric")
 
-        self.record['value'] = record_value
-        self.record['timestamp'] = time.time() # double, seconds since Unix epoch
-
+        self.record["value"] = record_value
+        self.record["timestamp"] = time.time()  # double, seconds since Unix epoch
 
     def emit(self) -> None:
         """This actually send the recorded value to the Sasquatch stack.
@@ -128,11 +129,7 @@ class Emitter():
         """
         payload = {
             "value_schema": json.dumps(self.schema),
-            "records": [
-                {
-                    "value": self.record
-                }
-            ],
+            "records": [{"value": self.record}],
         }
 
         headers = {
@@ -142,13 +139,13 @@ class Emitter():
 
         base_url = os.environ.get("KAFKA_API_URL", None)
 
-        if base_url is None or self.record['benchmark_env'] == 'unknown':
+        if base_url is None or self.record["benchmark_env"] == "unknown":
             print(f"Base URL: {base_url}")
             print(f"Benchmark environment: {self.record['benchmark_env']}")
             print(payload)
 
         else:
             # results in url like: `https://example.com/lsst.example.metric.name`
-            full_url = base_url + '/' + '.'.join([self.schema['namespace'], self.schema['name']])
+            full_url = base_url + "/" + ".".join([self.schema["namespace"], self.schema["name"]])
 
             requests.post(full_url, json=payload, headers=headers)
